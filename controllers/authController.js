@@ -29,7 +29,7 @@ export const signup = async (req, res) => {
 
     const verifyUrl = `${process.env.CLIENT_URL}/verify-email/${verificationToken}`;
 
-    await sendEmail({
+    sendEmail({
       to: email,
       subject: "Verify your email",
       html: `
@@ -37,7 +37,7 @@ export const signup = async (req, res) => {
         <p>Click the link below to verify your email:</p>
         <a href="${verifyUrl}">Verify Email</a>
       `,
-    });
+    }).catch((err) => console.error("Email sending failed:", err.message));
 
     res.status(201).json({
       message: "Signup successful. Please verify your email.",

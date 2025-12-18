@@ -1,25 +1,17 @@
-import nodemailer from "nodemailer";
+import sgMail from "@sendgrid/mail";
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const sendEmail = async ({ to, subject, html }) => {
   try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    await transporter.sendMail({
-      from: `"Expense Tracker" <${process.env.EMAIL_USER}>`,
+    await sgMail.send({
+      from: process.env.EMAIL_FROM,
       to,
       subject,
       html,
     });
-
-    return { success: true };
-  } catch (error) {
-    return { success: false, message: error.message || "Email sending failed" };
+  } catch (err) {
+    console.error("Email sending failed:", err.message);
   }
 };
 
